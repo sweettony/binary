@@ -1,9 +1,22 @@
 #ifndef THNODE_H_
 #define THNODE_H_
-typedef struct tag_node
+
+#include <string>
+typedef struct tag_th_node
 {
     int idx;
     int value;
-} TREE_NODE;
+    struct tag_th_node* pl;
+    struct tag_th_node* pr;
+} THREE_NODE;
+
+bool operator==(THREE_NODE& left, THREE_NODE& right);
+bool operator>(THREE_NODE& left, THREE_NODE& right);
+bool operator<(THREE_NODE& left, THREE_NODE& right);
+//bool operator==(THREE_NODE& left, THREE_NODE& right);
+
+
+
+
 
 #endif //THNODE_H_

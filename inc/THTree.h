@@ -8,6 +8,6 @@ public:
     virtual ~THTree(){ };
 
 public:
-    virtual int Insert(TREE_NODE& node) = 0;
+    virtual int Insert(THREE_NODE& node) = 0;
 };
 #endif //THTREE_H_

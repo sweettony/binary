@@ -11,9 +11,17 @@ public:
     THBStree();
     ~THBStree();
 public:
-    virtual int Insert(TREE_NODE& node);
-public:
-    TREE_NODE* m_root;
+    //<to insert node>
+    //return TH_OK on sucess others on fail
+    virtual int Insert(THREE_NODE& node);
+
+private:
+    //<to insert node, where>
+    int Insert(THREE_NODE& node, THREE_NODE*& root);
+
+    void Release(THREE_NODE* root);
+private:
+    THREE_NODE* m_root;
 };
 
 #endif //BSTREE_H_
