@@ -1,3 +1,6 @@
 #ignore dependencies and obj
 *.[do]
 *.out
+
+#vscode config
+.vscode/*
