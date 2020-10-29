@@ -2,6 +2,7 @@
 #include "THBSTree.h"
 #include "THStatVal.h"
 #include <cstring>
+#include "THMemory.h"
 
 THBStree::THBStree()
 {
@@ -16,14 +17,14 @@ THBStree::~THBStree()
 int THBStree::Insert(THREE_NODE& node)
 {
     return Insert(node, m_root);
-}
+} 
 
 int THBStree::Insert(THREE_NODE& node, THREE_NODE*& root)
 {
     int ret = TH_OK;
     if(root == NULL)
     {
-        root = new THREE_NODE;
+        root = NEW THREE_NODE;
         if(root == NULL)
         {
             ret = TH_FAIL;

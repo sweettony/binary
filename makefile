@@ -7,7 +7,7 @@ CPP_FILE := $(wildcard $(SOURCE_DIR)/src/*.cpp)
 OBJ_FILE := $(patsubst $(SOURCE_DIR)/src/%.cpp, $(SOURCE_DIR)/obj/%.o, $(CPP_FILE))
 DEP_FILE := $(patsubst $(SOURCE_DIR)/src/%.cpp, $(SOURCE_DIR)/dep/%.d, $(CPP_FILE))
 
-CFLAG := -I$(SOURCE_DIR)/inc
+CFLAG := -I$(SOURCE_DIR)/inc -g -DTH_DEBUG
 CPP   := g++
 
 TARGETNAME = a.out
@@ -31,5 +31,5 @@ clean:
 	@rm -rf $(TARGETNAME)
 	@echo "rm $(TARGETNAME)"
 
-
+include $(DEP_FILE)
 
