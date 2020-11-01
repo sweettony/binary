@@ -17,6 +17,5 @@ int main()
    // THTREENS::TH_HEAPDUMP();
     tree.Release();
     //THTREENS::TH_HEAPDUMP();
-    aa();
     return 0;
 }

@@ -19,6 +19,5 @@ bool operator<(const THREE_NODE& left, const THREE_NODE& right);
 bool operator>(const NODE_KEY_T& key, const THREE_NODE& right);
 bool operator<(const NODE_KEY_T& key, const THREE_NODE& right);
 
-void aa();
 
 #endif //THNODE_H_

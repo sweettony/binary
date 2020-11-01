@@ -35,15 +35,6 @@ bool operator<(const THREE_NODE& node, const NODE_KEY_T& key)
     return (key > node);
 }
 
-
-
-inline void aa()
-{
-    1+1;
-    2+2;
-    return;
-}
-
 THREE_NODE& THREE_NODE::operator=(const THREE_NODE& node)
 {
     memcpy(this, &node, sizeof(THREE_NODE));
