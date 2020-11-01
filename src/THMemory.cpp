@@ -32,14 +32,14 @@ static void THRemove_pointer_of_map(void* p)
 void* operator new(size_t size) throw(std::bad_alloc)
 {  
    void * p = malloc(size); 
-   THTREENS::g_default_heap.add(p);
+   THTREENS::g_default_heap.add(p, size);
    return p;
 }
 
 void* operator new[](size_t size) throw(std::bad_alloc)
 {
    void * p = malloc(size);
-   THTREENS::g_default_heap.add(p);
+   THTREENS::g_default_heap.add(p, size);
    return p;
 }
 
@@ -57,7 +57,6 @@ void  operator delete[](void* p) throw()
     THRemove_pointer_of_map(p);
     return free(p);
 }
-
 
 void* operator new(size_t size, std::string filename, int linenum) throw (std::bad_alloc)
 {

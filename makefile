@@ -1,13 +1,15 @@
-SOURCE_DIR := $(shell pwd)
-
+ROOT_DIR := $(shell pwd)
+DEP_DIR := $(ROOT_DIR)/dep
+OBJ_DIR := $(ROOT_DIR)/obj
+SRC_DIR := $(ROOT_DIR)/src
 $(shell mkdir -p dep > /dev/null)
 $(shell mkdir -p obj > /dev/null)
 
-CPP_FILE := $(wildcard $(SOURCE_DIR)/src/*.cpp)
-OBJ_FILE := $(patsubst $(SOURCE_DIR)/src/%.cpp, $(SOURCE_DIR)/obj/%.o, $(CPP_FILE))
-DEP_FILE := $(patsubst $(SOURCE_DIR)/src/%.cpp, $(SOURCE_DIR)/dep/%.d, $(CPP_FILE))
+CPP_FILE := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILE := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CPP_FILE))
+DEP_FILE := $(patsubst $(SRC_DIR)/%.cpp, $(DEP_DIR)/%.d, $(CPP_FILE))
 
-CFLAG := -I$(SOURCE_DIR)/inc -g -DTH_DEBUG
+CFLAG := -I$(ROOT_DIR)/inc -g -DTH_DEBUG
 CPP   := g++
 
 TARGETNAME = a.out
@@ -15,12 +17,12 @@ $(TARGETNAME) : $(DEP_FILE) $(OBJ_FILE)
 	@$(CPP) $(CFLAG) $(OBJ_FILE) -o $@
 	@echo "$(CPP) $(notdir $@)"
 
-$(SOURCE_DIR)/obj/%.o : $(SOURCE_DIR)/src/%.cpp
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(CPP) -c $(CFLAG) $< -o $@
 	@echo "$(CPP) $(notdir $@)"
 
-$(SOURCE_DIR)/dep/%.d : $(SOURCE_DIR)/src/%.cpp
-	@$(CPP) -MM $(CFLAG) $< -MT $(SOURCE_DIR)/dep/$*.d -MT $(SOURCE_DIR)/dep/$*.o -o $@
+$(DEP_DIR)/%.d : $(SRC_DIR)/%.cpp
+	@$(CPP) -MM $(CFLAG) $< -MT $(DEP_DIR)/$*.d -MT $(OBJ_DIR)/$*.o -o $@
 	@echo "$(CPP) $(notdir $@)"
 
 clean:

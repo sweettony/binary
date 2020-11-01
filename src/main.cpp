@@ -15,6 +15,8 @@ int main()
     const THREE_NODE* p = tree.Find(2);
     std::cout << p->value << std::endl;
    // THTREENS::TH_HEAPDUMP();
+   std::cout << THTREENS::g_default_heap.Total_usage() << std::endl;
+   THTREENS::g_default_heap.Dump();
     tree.Release();
     //THTREENS::TH_HEAPDUMP();
     return 0;
