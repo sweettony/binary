@@ -9,7 +9,7 @@ CPP_FILE := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILE := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CPP_FILE))
 DEP_FILE := $(patsubst $(SRC_DIR)/%.cpp, $(DEP_DIR)/%.d, $(CPP_FILE))
 
-CFLAG := -I$(ROOT_DIR)/inc -g -DTH_DEBUG
+CFLAG := -I$(ROOT_DIR)/inc -g -DTH_DEBUG -pthread
 CPP   := g++
 
 TARGETNAME = a.out

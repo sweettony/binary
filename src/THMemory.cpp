@@ -3,6 +3,7 @@
 #include "THMemory.h"
 #include <sstream>
 #include <list>
+#include <pthread.h>
 
 
 using namespace THTREENS;
@@ -10,7 +11,7 @@ std::map<std::string, std::map<THLLUINT, THHEAPMEM> > THTREENS::g_heap_map;
 THTREENS::THheapusage THTREENS::g_default_heap;
 
 #ifdef TH_DEBUG
-
+static pthread_mutex_t s_new_mutex = PTHREAD_MUTEX_INITIALIZER;
 static void THRemove_pointer_of_map(void* p)
 {
     std::map<std::string, std::map<THLLUINT, THHEAPMEM> >::iterator it = g_heap_map.begin();

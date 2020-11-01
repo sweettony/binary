@@ -33,6 +33,7 @@ namespace THTREENS
         THheapusage()
         {
             m_total = 0;
+            m_index = 0;
             memset(m_pointer, 0, sizeof(THHEAPINFO) * 1000);
         }
         ~THheapusage()
@@ -42,6 +43,7 @@ namespace THTREENS
     private:
         THHEAPINFO m_pointer[1000];
         THLLUINT m_total;
+        int      m_index;
     public:
         int find(void *p)
         {
@@ -54,6 +56,7 @@ namespace THTREENS
         }
         int add(void *p, size_t size)
         {
+            if(m_index == 1000) return false;
             for(int i = 0; i < 1000; i++)
             {
                 if(m_pointer[i].p == 0)
@@ -61,6 +64,7 @@ namespace THTREENS
                     m_pointer[i].p = p;
                     m_pointer[i].size = size;
                     m_total += size;
+                    m_index++;
                     return true;
                 }
             }
@@ -75,6 +79,7 @@ namespace THTREENS
                     m_pointer[i].p = 0;
                     m_total -= m_pointer[i].size;
                     m_pointer[i].size = 0;
+                    m_index--;
                     return true;
                 }
             }
