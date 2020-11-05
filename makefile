@@ -2,6 +2,9 @@ ROOT_DIR := $(shell pwd)
 DEP_DIR := $(ROOT_DIR)/dep
 OBJ_DIR := $(ROOT_DIR)/obj
 SRC_DIR := $(ROOT_DIR)/src
+
+
+
 $(shell mkdir -p dep > /dev/null)
 $(shell mkdir -p obj > /dev/null)
 
@@ -13,25 +16,28 @@ CFLAG := -I$(ROOT_DIR)/inc -g -DTH_DEBUG -pthread
 CPP   := g++
 
 TARGETNAME = a.out
-$(TARGETNAME) : $(DEP_FILE) $(OBJ_FILE)
+$(TARGETNAME) : $(OBJ_FILE)
 	@$(CPP) $(CFLAG) $(OBJ_FILE) -o $@
 	@echo "$(CPP) $(notdir $@)"
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@$(CPP) -MM $(CFLAG) $< -MT $(DEP_DIR)/$*.d -MT $(OBJ_DIR)/$*.o -o $(DEP_DIR)/$*.d
 	@$(CPP) -c $(CFLAG) $< -o $@
 	@echo "$(CPP) $(notdir $@)"
 
-$(DEP_DIR)/%.d : $(SRC_DIR)/%.cpp
-	@$(CPP) -MM $(CFLAG) $< -MT $(DEP_DIR)/$*.d -MT $(OBJ_DIR)/$*.o -o $@
-	@echo "$(CPP) $(notdir $@)"
+# $(DEP_DIR)/%.d : $(SRC_DIR)/%.cpp	
+# 	@echo "$(CPP) $(notdir $@)"
 
 clean:
-	@rm -rf dep
-	@echo "rm dep"
-	@rm -rf obj
 	@echo "rm obj"
-	@rm -rf $(TARGETNAME)
+	@rm -rf obj
+	
 	@echo "rm $(TARGETNAME)"
+	@rm -rf $(TARGETNAME)
 
-include $(DEP_FILE)
+# $(DEP_FILE):
+
+ifneq ($(MAKECMDGOALS), clean)
+include $(wildcard $(DEP_FILE))
+endif
 
