@@ -9,16 +9,74 @@ THBStree::THBStree()
     m_root = NULL;
 }
 
+
 THBStree::~THBStree()
 {
     Release();
 }
 
+THREE_NODE* THBStree::Get_most_right_node(THREE_NODE* root)
+{
+    THREE_NODE* pNode = NULL;
+    if(root == NULL)
+    {
+        pNode =  NULL;
+    }
+    else if(root->pr == NULL)
+    {
+        pNode =  root;
+    }
+    else
+    {
+        pNode =  Get_most_right_node(root->pr);
+    }
+    return pNode;
+}
 
 int  THBStree::Remove(THREE_NODE& node)
 {
+    return Remove(node, m_root);
+}
 
+int  THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
+{
+    int ret = TH_FAIL;
+    if(root == NULL)
+    {
+        ret == TH_FAIL;
+    }
+    else if(*root > node)
+    {
+        ret = Remove(node, root->pr);
+    }
+    else if(*root < node)
+    {
+        ret = Remove(node, root->pl);
+    }
+    else
+    {
+        if(root->pl == NULL && root->pr == NULL)
+        {
+            delete root;
+            root = NULL;
 
+        }
+        else if( root->pl != NULL &&  root->pr != NULL)
+        {
+            THREE_NODE* pNode = Get_most_right_node(root->pl);
+            pNode->pr = root->pr;
+            pNode = root->pl;
+            *root = *pNode;
+            delete pNode;
+        }
+        else
+        {
+            THREE_NODE* pNode = (root->pl == NULL) ? root->pr : root->pl;
+            *root = *pNode;
+            delete pNode;
+        }
+    }
+    return ret;
 }
 
 inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key) const
@@ -87,9 +145,9 @@ int THBStree::Insert(THREE_NODE& node, THREE_NODE*& root)
 
 inline void THBStree::Release()
 {
-   Release(m_root);
-   m_root = NULL;
-   return;
+    Release(m_root);
+    m_root = NULL;
+    return;
 }
 void THBStree::Release(THREE_NODE* root)
 {

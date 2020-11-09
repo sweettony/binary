@@ -12,11 +12,17 @@ int main()
         THREE_NODE node = {i, i, NULL, NULL};
         tree.Insert(node);
     }
-    const THREE_NODE* p = tree.Find(2);
-    std::cout << p->value << std::endl;
+    for(int i = 0; i < 500; i++)
+    {
+        THREE_NODE node = {i, i, NULL, NULL};
+        tree.Remove(node); 
+    }
+
+    //const THREE_NODE* p = tree.Find(2);
+    //std::cout << p->value << std::endl;
    // THTREENS::TH_HEAPDUMP();
-   std::cout << THTREENS::g_default_heap.Total_usage() << std::endl;
-   THTREENS::g_default_heap.Dump();
+   //std::cout << THTREENS::g_default_heap.Total_usage() << std::endl;
+  // THTREENS::g_default_heap.Dump();
     tree.Release();
     //THTREENS::TH_HEAPDUMP();
     return 0;

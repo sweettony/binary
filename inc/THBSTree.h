@@ -11,6 +11,8 @@ public:
     THBStree();
     ~THBStree();
 public:
+    THREE_NODE* Get_most_right_node(THREE_NODE* root);
+public:
     //to insert node
     //return TH_OK on sucess others on fail
     virtual int  Insert(THREE_NODE& node);
@@ -22,6 +24,7 @@ public:
 private:
     //<to insert node, where>
     int Insert(THREE_NODE& node, THREE_NODE*& root);
+    int Remove(THREE_NODE& node,THREE_NODE*& root);
     THREE_NODE* Find(const NODE_KEY_T& key, THREE_NODE* root) const;
     void Release(THREE_NODE* root);
 private:
