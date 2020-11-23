@@ -32,13 +32,61 @@ THREE_NODE* THBStree::Get_most_right_node(THREE_NODE* root)
     }
     return pNode;
 }
+THREE_NODE* THBStree::Get_most_left_node(THREE_NODE* root)
+{
+    THREE_NODE* pNode = NULL;
+    if(root == NULL)
+    {
+        pNode =  NULL;
+    }
+    else if(root->pl == NULL)
+    {
+        pNode =  root;
+    }
+    else
+    {
+        pNode =  Get_most_left_node(root->pr);
+    }
+    return pNode;
+}
+int THBStree::Get_tree_height(THREE_NODE* root)
+{
+    if(root == NULL) return 0;
+    int r_h = Get_tree_height(root->pr);
+    int l_h = Get_tree_height(root->pl);
+    return (r_h > l_h ? ++r_h : ++l_h);
+}
+
+THREE_NODE* THBStree::Get_node_parent(THREE_NODE* node, THREE_NODE* root)
+{
+    if(root == node || node == NULL)
+    {
+        return NULL;
+    }
+    else if(node == root->pl || node == root->pr)
+    {
+        return root;
+    }
+    else
+    {
+        if(*node > *root)
+        {
+            return Get_node_parent(root->pr, node);
+        }
+        else
+        {
+            return Get_node_parent(root->pl, node);
+        }
+    }
+    return NULL;
+}
 
 int  THBStree::Remove(THREE_NODE& node)
 {
     return Remove(node, m_root);
 }
 
-int  THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
+int THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
 {
     int ret = TH_FAIL;
     if(root == NULL)
@@ -59,21 +107,31 @@ int  THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
         {
             delete root;
             root = NULL;
-
-        }
-        else if( root->pl != NULL &&  root->pr != NULL)
-        {
-            THREE_NODE* pNode = Get_most_right_node(root->pl);
-            pNode->pr = root->pr;
-            pNode = root->pl;
-            *root = *pNode;
-            delete pNode;
         }
         else
         {
-            THREE_NODE* pNode = (root->pl == NULL) ? root->pr : root->pl;
-            *root = *pNode;
-            delete pNode;
+            THREE_NODE* pNode = Get_most_right_node(root->pl);
+            if(pNode == NULL)
+            {
+                *root = *root->pr;
+                delete root->pr;
+            }
+            else
+            {
+                THREE_NODE* pNode_parent = Get_node_parent(pNode, root);
+                if(pNode_parent == root)
+                {
+                    pNode->pr = root->pr;
+                    *root = *pNode;
+                }
+                else
+                {
+                    pNode_parent->pr = pNode->pl;
+                    root->idx = pNode->idx;
+                    root->value = pNode->value;
+                }
+                delete pNode;
+            }
         }
     }
     return ret;

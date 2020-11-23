@@ -9,25 +9,28 @@ class THBStree
 {
 public:
     THBStree();
-    ~THBStree();
+    virtual ~THBStree();
 public:
-    THREE_NODE* Get_most_right_node(THREE_NODE* root);
+    static THREE_NODE* Get_most_right_node(THREE_NODE* root);
+    static THREE_NODE* Get_most_left_node(THREE_NODE* root);
+    static THREE_NODE* Get_node_parent(THREE_NODE* node, THREE_NODE* root);
+    static int Get_tree_height(THREE_NODE* root);
 public:
     //to insert node
     //return TH_OK on sucess others on fail
-    virtual int  Insert(THREE_NODE& node);
-    virtual int  Remove(THREE_NODE& node);
-    virtual const THREE_NODE* Find(const NODE_KEY_T& key);
-    virtual const THREE_NODE* Find(const NODE_KEY_T& key) const;
+    int  Insert(THREE_NODE& node);
+    int  Remove(THREE_NODE& node);
+    const THREE_NODE* Find(const NODE_KEY_T& key);
+    const THREE_NODE* Find(const NODE_KEY_T& key) const;
     //Release resource
-    virtual void Release();
+    void Release();
 private:
     //<to insert node, where>
-    int Insert(THREE_NODE& node, THREE_NODE*& root);
-    int Remove(THREE_NODE& node,THREE_NODE*& root);
+    virtual int Insert(THREE_NODE& node, THREE_NODE*& root);
+    virtual int Remove(THREE_NODE& node,THREE_NODE*& root);
     THREE_NODE* Find(const NODE_KEY_T& key, THREE_NODE* root) const;
     void Release(THREE_NODE* root);
-private:
+protected:
     THREE_NODE* m_root;
 };
 
