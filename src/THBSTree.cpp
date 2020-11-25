@@ -71,22 +71,19 @@ THREE_NODE* THBStree::Get_node_parent(THREE_NODE* node, THREE_NODE* root)
     {
         if(*node > *root)
         {
-            return Get_node_parent(root->pr, node);
+            return Get_node_parent(node, root->pr);
         }
         else
         {
-            return Get_node_parent(root->pl, node);
+            return Get_node_parent(node, root->pl);
         }
     }
     return NULL;
 }
 
-int  THBStree::Remove(THREE_NODE& node)
-{
-    return Remove(node, m_root);
-}
 
-int THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
+
+int THBStree::Do_remove(THREE_NODE& node,THREE_NODE*& root)
 {
     int ret = TH_FAIL;
     if(root == NULL)
@@ -95,11 +92,11 @@ int THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
     }
     else if(*root > node)
     {
-        ret = Remove(node, root->pr);
+        ret = Do_remove(node, root->pr);
     }
     else if(*root < node)
     {
-        ret = Remove(node, root->pl);
+        ret = Do_remove(node, root->pl);
     }
     else
     {
@@ -137,15 +134,7 @@ int THBStree::Remove(THREE_NODE& node,THREE_NODE*& root)
     return ret;
 }
 
-inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key) const
-{
-    return Find(key, m_root);
-}
 
-inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key)
-{
-    return Find(key, m_root);
-}
 
 THREE_NODE* THBStree::Find(const NODE_KEY_T& key, THREE_NODE* root) const
 {
@@ -165,12 +154,7 @@ THREE_NODE* THBStree::Find(const NODE_KEY_T& key, THREE_NODE* root) const
     return pRet;
 }
 
-inline int THBStree::Insert(THREE_NODE& node)
-{
-    return Insert(node, m_root);
-} 
-
-int THBStree::Insert(THREE_NODE& node, THREE_NODE*& root)
+int THBStree::Do_insert(THREE_NODE& node, THREE_NODE*& root)
 {
     int ret = TH_OK;
     if(root == NULL)
@@ -188,11 +172,11 @@ int THBStree::Insert(THREE_NODE& node, THREE_NODE*& root)
     }
     else if(node > *root)
     {
-        Insert(node, root->pr);
+        ret = Do_insert(node, root->pr);
     }
     else if(node < *root)
     {
-        Insert(node, root->pl);
+        ret = Do_insert(node, root->pl);
     }
     else
     {
@@ -201,12 +185,7 @@ int THBStree::Insert(THREE_NODE& node, THREE_NODE*& root)
     return TH_OK;
 }
 
-inline void THBStree::Release()
-{
-    Release(m_root);
-    m_root = NULL;
-    return;
-}
+
 void THBStree::Release(THREE_NODE* root)
 {
     if(root == NULL) return;

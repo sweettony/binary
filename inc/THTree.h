@@ -4,10 +4,14 @@
 class THTree
 {
 public:
-    THTree(){ };
-    virtual ~THTree(){ };
+    THTree()
+    {
 
-public:
-    virtual int Insert(THREE_NODE& node) = 0;
+    };
+    virtual ~THTree()
+    {
+
+
+    };
 };
 #endif //THTREE_H_

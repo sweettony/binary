@@ -15,116 +15,138 @@ inline int THAVLTree::Get_AVL_Balance_factor(THREE_NODE *node)
 {
     if (node == NULL)
         return 0;
-    return abs(Get_tree_height(node->pr) - Get_tree_height(node->pl));
+    return Get_tree_height(node->pr) - Get_tree_height(node->pl);
 }
 
-THREE_NODE *THAVLTree::rotation_left(THREE_NODE *node)
+THREE_NODE *THAVLTree::Rotation_left(THREE_NODE *node)
 {
     THREE_NODE *parent      = Get_node_parent(node, m_root);
-    THREE_NODE *grandparent = Get_node_parent(parent, m_root);
-    if (parent == NULL)
-        return NULL;
-    
-    parent->pr = node->pl;
-    node->pl = parent;
-    if (grandparent)
+    THREE_NODE *right_child = node->pr;
+
+    node->pr = right_child->pl;
+    right_child->pl = node;
+
+    if (parent)
     {
-        grandparent->pl == parent ? grandparent->pl = node : grandparent->pr = node;
+        (parent->pl == node) ? parent->pl = right_child : parent->pr = right_child;
     }
-    return node;
+    else
+    {
+        m_root = right_child;
+    }
+    return parent;
 }
-THREE_NODE *THAVLTree::rotation_right_left(THREE_NODE *node)
+THREE_NODE *THAVLTree::Rotation_right_left(THREE_NODE *node)
 {
     THREE_NODE *parent      = Get_node_parent(node, m_root);
-    THREE_NODE *grandparent = Get_node_parent(parent, m_root);
-    if (parent == NULL)
-        return NULL;
-    THREE_NODE *pNode_left = node->pl;
-    //error 
-    //node->pl = pNode_left->pr;
-    Get_most_left_node(node)->pl = pNode_left->pr;
-    pNode_left->pr = node;
+    THREE_NODE *right_child = node->pr;
+    THREE_NODE *right_child_left = right_child->pl;
 
-    //error
-    //parent->pr = pNode_left->pl;
-    Get_most_right_node(parent)->pr = pNode_left->pl;
-    pNode_left->pl = parent;
+    right_child->pl = right_child_left->pr;
+    right_child_left->pr = right_child;
+    node->pr = right_child_left->pl;
+    right_child_left->pl = node;
 
-    if (grandparent)
+    if (parent)
     {
-        grandparent->pl == parent ? grandparent->pl = pNode_left : grandparent->pr = pNode_left;
+        parent->pl == node ? parent->pl = right_child_left : parent->pr = right_child_left;
     }
-
-    return pNode_left;
+    else
+    {
+        m_root = right_child_left;
+    }
+    return parent;
 }
 
-THREE_NODE*  THAVLTree::rotation_right(THREE_NODE* node)
+THREE_NODE*  THAVLTree::Rotation_right(THREE_NODE* node)
 {
     THREE_NODE *parent      = Get_node_parent(node, m_root);
-    THREE_NODE *grandparent = Get_node_parent(parent, m_root);
-    if (parent == NULL)
-        return NULL;
-    
-    Get_most_left_node(parent)->pl = node->pr;
-    node->pr = parent;
-    if (grandparent)
+    THREE_NODE *left_child = node->pl;
+
+    node->pl = left_child->pr;
+    left_child->pr = node;
+    if (parent)
     {
-        grandparent->pl == parent ? grandparent->pl = node : grandparent->pr = node;
+        (parent->pl == parent) ? parent->pl = left_child : parent->pr = left_child;
     }
-    return node;
+    else
+    {
+        m_root = left_child;
+    }
+    return parent;
 }
 
-THREE_NODE*  THAVLTree::rotation_left_right(THREE_NODE* node)
+THREE_NODE*  THAVLTree::Rotation_left_right(THREE_NODE* node)
 {
+    THREE_NODE *parent      = Get_node_parent(node, m_root);
+    THREE_NODE *left_child = node->pl;
+    THREE_NODE *left_child_right = left_child->pr;
 
+    left_child->pr = left_child_right->pl;
+    left_child_right->pl = left_child;
 
+    node->pl = left_child_right->pr;
+    left_child_right->pr = node;
+
+    if (parent)
+    {
+        (parent->pl == node) ? parent->pl = left_child_right : parent->pr = left_child_right;
+    }
+    else
+    {
+        m_root = left_child_right;
+    }
+    return parent;
 }
 
 void THAVLTree::Balance(THREE_NODE *node)
 {
-    if (node == NULL)
+    if (node == NULL) 
         return;
-
-    THREE_NODE *parent       = Get_node_parent(node,   m_root);
-    int parent_factor        = Get_AVL_Balance_factor(parent);
-    int node_factor          = Get_AVL_Balance_factor(node);
-    
-    if (node_factor == 0 || parent_factor == NULL)
-        return;
-
-    if (parent_factor == 2)
+    int node_factor = Get_AVL_Balance_factor(node);
+    std::cout << "node factor = " << node_factor << std::endl; 
+    if (node_factor == 2)
     {
-        if (node_factor > 0)
+        if( Get_AVL_Balance_factor(node->pr) > 0 )
         {
-            node = rotation_left(node);
+            node = Rotation_left(node);
         }
         else
         {
-            node = rotation_right_left(node);
+            node = Rotation_left_right(node);
+        }
+        
+    }
+    else if (node_factor == -2)
+    {
+        if (node_factor > 0)
+        {
+            node = Rotation_right(node);
+        }
+        else
+        {
+            node = Rotation_right_left(node);
         }
     }
-    if (parent_factor == -2)
+    else if (node_factor == 0)
     {
-        if (node_factor > 0)
-        {
-            node = rotation_left(node);
-        }
-        else
-        {
-            node = rotation_right_left(node);
-        }
+        return;
+    }
+    else
+    {
+        node = Get_node_parent(node, m_root);
     }
     Balance(node);
     return;
 }
 
-int THAVLTree::Insert(THREE_NODE &node, THREE_NODE *&root)
+int THAVLTree::Do_insert(THREE_NODE &node, THREE_NODE *&root)
 {
     int ret = TH_OK;
-    if (root == NULL)
+    if(root == NULL)
     {
         root = NEW THREE_NODE;
-        if (root == NULL)
+        if(root == NULL)
         {
             ret = TH_FAIL;
         }
@@ -135,67 +157,77 @@ int THAVLTree::Insert(THREE_NODE &node, THREE_NODE *&root)
             Balance(Get_node_parent(root, m_root));
         }
     }
-    else if (node > *root)
+    else if(node > *root)
     {
-        Insert(node, root->pr);
+        ret = Do_insert(node, root->pr);
     }
-    else if (node < *root)
+    else if(node < *root)
     {
-        Insert(node, root->pl);
+        ret = Do_insert(node, root->pl);
     }
     else
     {
         *root = node;
     }
     return TH_OK;
+    return ret;
 }
 
-int THAVLTree::Remove(THREE_NODE &node, THREE_NODE *&root)
+int THAVLTree::Do_remove(THREE_NODE &node, THREE_NODE *&root)
 {
-    int ret = TH_FAIL;
+    int ret = TH_OK;
     if (root == NULL)
     {
         ret == TH_FAIL;
     }
     else if (*root > node)
     {
-        ret = Remove(node, root->pr);
+        ret = Do_remove(node, root->pr);
     }
     else if (*root < node)
     {
-        ret = Remove(node, root->pl);
+        ret = Do_remove(node, root->pl);
     }
     else
     {
+        THREE_NODE *balance_node_start = NULL;
+        THREE_NODE *root_ref = root;
         if (root->pl == NULL && root->pr == NULL)
         {
-            delete root;
+            balance_node_start = Get_node_parent(root, m_root);
             root = NULL;
         }
         else
         {
-            THREE_NODE *pNode = Get_most_right_node(root->pl);
-            if (pNode == NULL)
+            if (root->pl == NULL)
             {
-                *root = *root->pr;
-                delete root->pr;
+                balance_node_start = Get_node_parent(root, m_root);
+                root = root->pr;
             }
             else
             {
-                THREE_NODE *pNode_parent = Get_node_parent(pNode, root);
-                if (pNode_parent == root)
+                THREE_NODE *most_right_of_root_left = Get_most_right_node(root->pl);
+                if (most_right_of_root_left == root->pl)
                 {
-                    pNode->pr = root->pr;
-                    *root = *pNode;
+                    most_right_of_root_left->pr = root->pr;
+                    root = most_right_of_root_left;
+                    balance_node_start = root;
                 }
                 else
                 {
-                    pNode_parent->pr = pNode->pl;
-                    root->idx = pNode->idx;
-                    root->value = pNode->value;
+                    THREE_NODE* parent_most_right_of_root_left = Get_node_parent(most_right_of_root_left, root);
+                    parent_most_right_of_root_left->pr = most_right_of_root_left->pl;
+                    root = most_right_of_root_left;
+                    root->pl = root_ref->pl;
+                    root->pr = root_ref->pr;
+                    balance_node_start = parent_most_right_of_root_left;
                 }
-                delete pNode;
             }
+        
         }
+        delete root_ref;
+        std::cout << "balance_node_start = " << balance_node_start << std::endl;
+        Balance(balance_node_start);
     }
+    return ret;
 }
