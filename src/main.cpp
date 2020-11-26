@@ -8,19 +8,20 @@
 int main()
 {
     THAVLTree tree;
-    for(int i = 0; i < 500; i++)
+    for(int i = 0; i < 65536; i++)
     {
         THREE_NODE node = {i, i, NULL, NULL};
         tree.Insert(node);
     }
     std::cout << "tree height = " << tree.Get_height() << std::endl;
-    for(int i = 0; i < 500; i++)
-    {
-        THREE_NODE node = {i, i, NULL, NULL};
-        tree.Remove(node); 
-    }
-    
+    //THTREENS::TH_HEAPDUMP();
+    // for(int i = 0; i < 65536; i++)
+    // {
+    //     THREE_NODE node = {i, i, NULL, NULL};
+    //     tree.Remove(node); 
+    // }
     tree.Release();
+    THTREENS::TH_HEAPDUMP();
     return 0;
 }
 

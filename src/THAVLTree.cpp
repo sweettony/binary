@@ -33,6 +33,7 @@ THREE_NODE *THAVLTree::Rotation_left(THREE_NODE *node)
     else
     {
         m_root = right_child;
+        //std::cout << m_root->idx << std::endl;
     }
     return parent;
 }
@@ -104,7 +105,7 @@ void THAVLTree::Balance(THREE_NODE *node)
     if (node == NULL) 
         return;
     int node_factor = Get_AVL_Balance_factor(node);
-    std::cout << "node factor = " << node_factor << std::endl; 
+    //std::cout << "node factor = " << node_factor << std::endl;
     if (node_factor == 2)
     {
         if( Get_AVL_Balance_factor(node->pr) > 0 )
@@ -113,7 +114,7 @@ void THAVLTree::Balance(THREE_NODE *node)
         }
         else
         {
-            node = Rotation_left_right(node);
+            node = Rotation_right_left(node);
         }
         
     }
@@ -125,7 +126,7 @@ void THAVLTree::Balance(THREE_NODE *node)
         }
         else
         {
-            node = Rotation_right_left(node);
+            node = Rotation_left_right(node);
         }
     }
     else if (node_factor == 0)
@@ -175,16 +176,19 @@ int THAVLTree::Do_insert(THREE_NODE &node, THREE_NODE *&root)
 
 int THAVLTree::Do_remove(THREE_NODE &node, THREE_NODE *&root)
 {
+    // std::cout << "node.idx = " << node.idx << std::endl;
+    // std::cout << "root->idx = " << root->idx << std::endl;
     int ret = TH_OK;
     if (root == NULL)
     {
+        //std::cout << "1234" << std::endl;
         ret == TH_FAIL;
     }
-    else if (*root > node)
+    else if (node > *root)
     {
         ret = Do_remove(node, root->pr);
     }
-    else if (*root < node)
+    else if (node < *root)
     {
         ret = Do_remove(node, root->pl);
     }
@@ -226,7 +230,7 @@ int THAVLTree::Do_remove(THREE_NODE &node, THREE_NODE *&root)
         
         }
         delete root_ref;
-        std::cout << "balance_node_start = " << balance_node_start << std::endl;
+        //std::cout << "balance_node_start = " << balance_node_start << std::endl;
         Balance(balance_node_start);
     }
     return ret;

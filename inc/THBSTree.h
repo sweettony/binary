@@ -41,14 +41,12 @@ inline int THBStree::Insert(THREE_NODE& node)
 {
     return Do_insert(node, m_root);
 } 
-
 inline void THBStree::Release()
 {
     Release(m_root);
     m_root = NULL;
     return;
 }
-
 inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key) const
 {
     return Find(key, m_root);
