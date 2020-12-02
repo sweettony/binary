@@ -170,7 +170,6 @@ int THAVLTree::Do_insert(THREE_NODE &node, THREE_NODE *&root)
     {
         *root = node;
     }
-    return TH_OK;
     return ret;
 }
 
