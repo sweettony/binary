@@ -8,14 +8,11 @@ class THAVLTree
 public:
     THAVLTree();
     virtual ~THAVLTree();
-
-protected:
-    virtual int Do_insert(THREE_NODE& node, THREE_NODE*& root);
-    virtual int Do_remove(THREE_NODE& node, THREE_NODE*& root);
-
 private:
-    int Get_AVL_Balance_factor(THREE_NODE* node);
-    void Balance(THREE_NODE* node);
+    int          Get_AVL_Balance_factor(THREE_NODE* node);
+    void         Balance(THREE_NODE* node);
+    virtual int  Vmalloc_Node(THREE_NODE& node, THREE_NODE*& root)
+    virtual int  Vfree_Node(THREE_NODE& node, THREE_NODE*& root);
     THREE_NODE*  Rotation_left(THREE_NODE* node);
     THREE_NODE*  Rotation_right_left(THREE_NODE* node);
     THREE_NODE*  Rotation_right(THREE_NODE* node);

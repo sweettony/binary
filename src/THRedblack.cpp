@@ -142,7 +142,7 @@ THTREE_RB_NODE* THRBTree::VFind(const NODE_KEY_T& key, THTREE_RB_NODE* root)
 {
     if(root == NULL)
     {
-
+        return NULL;
     }
     else if(key > *root)
     {
@@ -174,15 +174,11 @@ int THRBTree::VRemove(THTREE_RB_NODE* node, THTREE_RB_NODE* root)
     }
     else
     {
-        if(*node == *root)
-        {
-            delete m_root;
-            m_root = NULL;
-        }
-        if(root->color == NODE_RED) // has two leaf node
-        {
-            THTREE_RB_NODE Get_parent_node<THTREE_RB_NODE>(root, m_root);
-        }
+        VDelete(root);
     }
     return TH_OK;
+}
+int THRBTree::VDelete(THTREE_RB_NODE* node)
+{
+    
 }

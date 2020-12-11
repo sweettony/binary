@@ -1,67 +1,158 @@
 #ifndef THBSTREE_H_
 #define THBSTREE_H_
 
-#include "THNode.h"
 #include "THTree.h"
+#include "THStatVal.h"
+#include <cstring>
+#include "THMemory.h"
 #include <stddef.h>
-class THBStree
-    : public THTree
+#include <map>
+template<typename T> class THBStree
+    : public THTree<T>
 {
 public:
-    THBStree();
-    virtual ~THBStree();
+    THBStree()
+        : THTree<T>()
+    {
+        this->m_root = NULL;
+    }
+    virtual ~THBStree()
+    {
+        Release();
+    }
 public:
-    static THREE_NODE* Get_most_right_node(THREE_NODE* root);
-    static THREE_NODE* Get_most_left_node(THREE_NODE* root);
-    static THREE_NODE* Get_node_parent(THREE_NODE* node, THREE_NODE* root);
-    static int Get_tree_height(THREE_NODE* root);
+    int  Insert(T& node)
+    {
+        return Insert(node, this->m_root);
+    }
+    int  Remove(T& node)
+    {
+        return Remove(node, this->m_root);
+    }
+    const T* Find(const NODE_KEY_T& key)
+    {
+        return Find(key, this->m_root);
+    }
+    const T* Find(const NODE_KEY_T& key) const
+    {
+        return Find(key, this->m_root);
+    }
+    void Release()
+    {
+        return Release(this->m_root);
+    }
+private:
+    int Remove(T& node,T*& root)
+    {
+        if(root == NULL)
+        {
+            return TH_FAIL;
+        }
+        else if(*root > node)
+        {
+            return Remove(node, root->pr);
+        }
+        else if(*root < node)
+        {
+            return Remove(node, root->pl);
+        }
+        else
+        {
+            Vfree_Node(node, root)
+        }
+        return TH_OK;
+    }
 
-public:
-    //to insert node
-    //return TH_OK on sucess others on fail
-    int  Get_height();
-    int  Insert(THREE_NODE& node);
-    int  Remove(THREE_NODE& node);
-    const THREE_NODE* Find(const NODE_KEY_T& key);
-    const THREE_NODE* Find(const NODE_KEY_T& key) const;
-    void Release();
+    virtual int Vfree_Node(T& node, T*& root)
+    {
+        if(root->pl == NULL && root->pr == NULL)
+        {
+            delete root;
+            root = NULL;
+        }
+        else
+        {
+            T* pNode = Get_most_right_node(root->pl);
+            if(pNode == NULL)
+            {
+                *root = *root->pr;
+                delete root->pr;
+            }
+            else
+            {
+                T* pNode_parent = Get_node_parent(pNode, root);
+                if(pNode_parent == root)
+                {
+                    pNode->pr = root->pr;
+                    *root = *pNode;
+                }
+                else
+                {
+                    pNode_parent->pr = pNode->pl;
+                    root->idx = pNode->idx;
+                    root->value = pNode->value;
+                }
+                delete pNode;
+            }
+        }
+        return TH_OK;
+    }
 
-protected:
-    //<to insert node, where>
-    virtual int Do_insert(THREE_NODE& node, THREE_NODE*& root);
-    virtual int Do_remove(THREE_NODE& node, THREE_NODE*& root);
-    THREE_NODE* Find(const NODE_KEY_T& key, THREE_NODE* root) const;
-    void Release(THREE_NODE* root);
+    T* Find(const NODE_KEY_T& key, T* root) const
+    {
+        if(key > *root)
+        {
+            return Find(key, root->pr);
+        }
+        else if(key < *root)
+        {
+            return Find(key, root->pl);
+        }
+        else
+        {
 
-protected:
-    THREE_NODE* m_root;
+        }
+        return root;
+    }
+
+    int Insert(T& node, T*& root)
+    {
+        if(root == NULL)
+        {
+            return Vmalloc_Node(node, root);
+        }
+        else if(node > *root)
+        {
+            return Insert(node, root->pr);
+        }
+        else if(node < *root)
+        {
+            return Insert(node, root->pl);
+        }
+        else
+        {
+            *root = node;
+        }
+        return TH_OK;
+    }
+
+    virtual int Vmalloc_Node(T& node, T*& root)
+    {
+        root = NEW T;
+        if(root == NULL)
+            return TH_FAIL;
+        *root = node;
+        (*root).pl = (*root).pr = NULL;
+        return TH_OK;
+    }
+
+    void Release(T* root)
+    {
+        if(root == NULL) return;
+        Release(root->pl);
+        Release(root->pr);
+        delete root;
+        root = NULL;
+    }
 };
-
-inline int THBStree::Insert(THREE_NODE& node)
-{
-    return Do_insert(node, m_root);
-} 
-inline void THBStree::Release()
-{
-    Release(m_root);
-    m_root = NULL;
-    return;
-}
-inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key) const
-{
-    return Find(key, m_root);
-}
-
-inline const THREE_NODE* THBStree::Find(const NODE_KEY_T& key)
-{
-    return Find(key, m_root);
-}
-inline int THBStree::Remove(THREE_NODE& node)
-{
-    return Do_remove(node, m_root);
-}
-inline int THBStree::Get_height()
-{
-    return Get_tree_height(m_root);
-}
 #endif //BSTREE_H_

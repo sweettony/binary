@@ -23,6 +23,7 @@ private:
     THTREE_RB_NODE* VFind(const NODE_KEY_T& key, THTREE_RB_NODE* root);
     int VRemove(THTREE_RB_NODE* node, THTREE_RB_NODE* root);
     int VBalance(THTREE_RB_NODE* node);
+    int VDelete(THTREE_RB_NODE* node);
 private:
     THTREE_RB_NODE* m_root;
 };
