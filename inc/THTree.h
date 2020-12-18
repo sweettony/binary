@@ -1,9 +1,10 @@
 #ifndef THTREE_H_
 #define THTREE_H_
 #include "THNode.h"
+#include "THStatVal.h"
 #include "stddef.h"
 
-template<typename T>class THTree
+template<typename T> class THTree
 {
 protected:
     THTree()
@@ -72,13 +73,65 @@ public:
         }
         return root;
     }
-    unsigned int Get_tree_height(T* root)
+    static THUINT Get_tree_height(T* root)
     {
         if(root == NULL) return 0;
-        int r_h = Get_tree_height(root->pr);
-        int l_h = Get_tree_height(root->pl);
+        THUINT r_h = Get_tree_height(root->pr);
+        THUINT l_h = Get_tree_height(root->pl);
         return (r_h > l_h ? ++r_h : ++l_h);
     }
+    virtual THUINT Support_self_balance()
+    {
+        return TH_UNSUP_SELF_BALANCE;
+    }
+
+protected:
+    T*  Rotation_left(T* node)
+    {
+        if(node == NULL)
+        {
+            THWARNING("node == NULL");
+            return NULL;
+        }
+        T* ret = node->pr;
+        if(ret == NULL) 
+        {
+            THWARNING("ret == NULL");
+            return NULL;
+        }
+        T* parent_of_node = Get_parent_node(node, m_root);
+        node->pr = ret->pl;
+        ret->pl = node;
+        if(parent_of_node != NULL)
+            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);  
+        return ret;
+    }
+
+    T*  Rotation_right(T* node)
+    {
+        if(node == NULL)
+        {
+            THWARNING("node == NULL");
+            return NULL;
+        }
+        T* ret = node->pl;
+        if(ret == NULL) 
+        {
+            THWARNING("ret == NULL");
+            return NULL;
+        }
+        T* parent_of_node = Get_parent_node(node, m_root);
+        node->pl = ret->pr;
+        ret->pl = node;
+        if(parent_of_node != NULL)
+            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);  
+        return ret;
+    }
+    virtual void Self_balance()
+    { 
+        return; 
+    }
+
 
 protected:
     T* m_root;

@@ -58,46 +58,10 @@ private:
         }
         else
         {
-            Vfree_Node(node, root)
+            Vfree_node(node, root);
         }
         return TH_OK;
     }
-
-    virtual int Vfree_Node(T& node, T*& root)
-    {
-        if(root->pl == NULL && root->pr == NULL)
-        {
-            delete root;
-            root = NULL;
-        }
-        else
-        {
-            T* pNode = Get_most_right_node(root->pl);
-            if(pNode == NULL)
-            {
-                *root = *root->pr;
-                delete root->pr;
-            }
-            else
-            {
-                T* pNode_parent = Get_node_parent(pNode, root);
-                if(pNode_parent == root)
-                {
-                    pNode->pr = root->pr;
-                    *root = *pNode;
-                }
-                else
-                {
-                    pNode_parent->pr = pNode->pl;
-                    root->idx = pNode->idx;
-                    root->value = pNode->value;
-                }
-                delete pNode;
-            }
-        }
-        return TH_OK;
-    }
-
     T* Find(const NODE_KEY_T& key, T* root) const
     {
         if(key > *root)
@@ -119,7 +83,7 @@ private:
     {
         if(root == NULL)
         {
-            return Vmalloc_Node(node, root);
+            return Vmalloc_node(node, root);
         }
         else if(node > *root)
         {
@@ -135,8 +99,16 @@ private:
         }
         return TH_OK;
     }
-
-    virtual int Vmalloc_Node(T& node, T*& root)
+    void Release(T* root)
+    {
+        if(root == NULL) return;
+        Release(root->pl);
+        Release(root->pr);
+        delete root;
+        root = NULL;
+    }
+protected:
+    virtual int Vmalloc_node(T& node, T*& root)
     {
         root = NEW T;
         if(root == NULL)
@@ -146,13 +118,41 @@ private:
         return TH_OK;
     }
 
-    void Release(T* root)
+    virtual T* Vfree_node(T& node, T*& root)
     {
-        if(root == NULL) return;
-        Release(root->pl);
-        Release(root->pr);
-        delete root;
-        root = NULL;
+        T* parent = THTree<T>::Get_parent_node(root, this->m_root);
+        if(root->pl == NULL && root->pr == NULL)
+        {
+            delete root;
+            root = NULL;
+        }
+        else
+        {
+            T* pNode = THTree<T>::Get_most_right_node(root->pl);
+            if(pNode == NULL)
+            {
+                *root = *root->pr;
+                delete root->pr;
+            }
+            else
+            {
+                parent = THTree<T>::Get_parent_node(pNode, root);
+                if(parent == root)
+                {
+                    pNode->pr = root->pr;
+                    *root = *pNode;
+                }
+                else
+                {
+                    parent->pr = pNode->pl;
+                    root->idx = pNode->idx;
+                    root->value = pNode->value;
+                }
+                delete pNode;
+            }
+        }
+        return parent;
     }
+
 };
 #endif //BSTREE_H_
