@@ -103,7 +103,13 @@ protected:
         node->pr = ret->pl;
         ret->pl = node;
         if(parent_of_node != NULL)
-            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);  
+        {
+            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);
+        }
+        else
+        {
+            m_root =  ret;
+        }
         return ret;
     }
 
@@ -124,7 +130,11 @@ protected:
         node->pl = ret->pr;
         ret->pl = node;
         if(parent_of_node != NULL)
-            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);  
+            (parent_of_node->pr == node) ? (parent_of_node->pr = ret) : (parent_of_node->pl = ret);
+        else
+        {
+            m_root = ret;
+        }
         return ret;
     }
     virtual void Self_balance()
